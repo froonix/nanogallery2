@@ -41,7 +41,7 @@
       }
 
       // Build the URL
-      var url = G.O.dataProvider + '?albumID='+albumID;             // which album
+      var url = G.O.dataProvider + '?albumID='+encodeURIComponent(albumID);             // which album
       // all thumbnails sizes (for responsive display)
       url += '&hxs=' + G.tn.settings.getH(G.GOM.curNavLevel, 'xs');
       url += '&wxs=' + G.tn.settings.getW(G.GOM.curNavLevel, 'xs');
