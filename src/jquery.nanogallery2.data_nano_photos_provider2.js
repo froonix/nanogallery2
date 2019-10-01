@@ -4,9 +4,9 @@
  * Sources:  https://github.com/nanostudio-org/nanogallery2
  *
  * License:  GPLv3 and commercial licence
- * 
+ *
 */
- 
+
 // ########################################################
 // ##### nanogallery2 - module NANOPHOTOSPROVIDER2    #####
 // ########################################################
@@ -26,10 +26,10 @@
     }
 }(function ($) {
 // ;(function ($) {
-  
+
   jQuery.nanogallery2.data_nano_photos_provider2 = function (instance, fnName){
     var G = instance;      // current nanogallery2 instance
-    
+
     /** @function AlbumGetContent */
     var AlbumGetContent = function(albumID, fnToCall, fnParam1, fnParam2) {
 
@@ -63,12 +63,12 @@
       // url += '&hla=' + G.tn.settings.height[G.GOM.curNavLevel].la;
       // url += '&wxl=' + G.tn.settings.width[G.GOM.curNavLevel].xl;
       // url += '&hxl=' + G.tn.settings.height[G.GOM.curNavLevel].xl;
-      
+
       PreloaderDisplay( true );
       jQuery.ajaxSetup({ cache: false });
       jQuery.support.cors = true;
       try {
-        
+
         var tId = setTimeout( function() {
           // workaround to handle JSONP (cross-domain) errors
           PreloaderDisplay(false);
@@ -76,13 +76,13 @@
         }, 60000 );
 
         if( G.O.debugMode ) { console.log('nanoPhotosProvider2 URL: ' + url); }
-        
+
         jQuery.getJSON(url, function(data, status, xhr) {
           clearTimeout( tId );
           PreloaderDisplay( false );
 
           JsonParseData(albumIdx, data);
-          
+
           if( data.nano_status == 'ok' ) {
             AlbumPostProcess( albumID );
             if( fnToCall !== null &&  fnToCall !== undefined) {
@@ -104,17 +104,17 @@
           var err = textStatus + ', ' + error + ' ' + k + '<br><br>URL:'+url;
           NanoAlert(G, 'Could not retrieve nanoPhotosProvider2 data. Error: ' + err);
 
-        });    
-      
+        });
+
       }
       catch(e) {
         NanoAlert(G, 'Could not retrieve nanoPhotosProvider2 data. Error: ' + e);
       }
     }
 
-    
+
     function JsonConvertCharset( str ) {
-      
+
       return decodeURIComponent(str);
 
 
@@ -132,9 +132,9 @@
     }
 
     function JsonParseData(albumIdx, data) {
-      if( G.O.debugMode ) { 
+      if( G.O.debugMode ) {
         console.log('nanoPhotosProvider2 parse data:');
-        console.dir(data);    
+        console.dir(data);
       }
 
       var foundAlbumID = false;
@@ -142,10 +142,10 @@
 
       // loop each item
       jQuery.each( data.album_content, function( i, item ){
-      
+
         // base URL where the images are stored
         var baseURL = G.O.dataProvider.substring(0, G.O.dataProvider.indexOf('nano_photos_provider2.php'));
-        
+
         // image URL
         var src = baseURL + JsonConvertCharset( item.src );
 
@@ -166,7 +166,7 @@
 
         var filterAlbum = false;
         if( kind == 'album' ) {
-          // check if 
+          // check if
           if( !FilterAlbumName(title, ID) ) { filterAlbum = true; }
         }
 
@@ -178,10 +178,10 @@
           }
 
           var tags = (item.tags === undefined) ? '' : item.tags;
-          
+
           var newItem = NGY2Item.New( G, title.split('_').join(' ') , description, ID, albumID, kind, tags );
           newItem.setMediaURL( src, 'img');
-          
+
           // dominant colorS as a gif
           if( item.dcGIF !== undefined ) {
             newItem.imageDominantColors='data:image/gif;base64,'+item.dcGIF;
@@ -190,7 +190,7 @@
           if( item.dc !== undefined && item.dc !== '' ) {
             newItem.imageDominantColor=item.dc;
           }
-          
+
           if( kind == 'album' ) {
             // number of items in album
             newItem.numberItems = item.cnt;
@@ -200,12 +200,12 @@
             newItem.imageWidth = item.imgWidth;
             newItem.imageHeight = item.imgHeight;
           }
-          
+
           // item download URL
           if( item.originalURL != '' ) {
             newItem.downloadURL = baseURL+JsonConvertCharset(item.originalURL);
           }
-          
+
           // retrieve responsive thumbnails urls and sizes
           var cnl = G.GOM.curNavLevel;      // current navigation level ('L1' or 'LN');
           var l=['xs', 'sm', 'me', 'la', 'xl'];
@@ -214,26 +214,26 @@
             newItem.thumbs.width[cnl][l[n]]   = parseInt(item.t_width[n]);
             newItem.thumbs.height[cnl][l[n]]  = parseInt(item.t_height[n]);
           }
-         
+
           // post-process callback
           var fu = G.O.fnProcessData;
           if( fu !== null ) {
             typeof fu == 'function' ? fu(newItem, G.O.dataProvider, data) : window[fu](newItem, G.O.dataProvider, data);
           }
-          
+
         }
       });
 
       G.I[albumIdx].contentIsLoaded = true;   // album's content is ready
-    }    
-    
+    }
+
 
     // -----------
-    // Initialize 
+    // Initialize
     function Init() {
 
     }
-    
+
 
     // shortcuts to NGY2Tools functions (with context)
     var PreloaderDisplay = NGY2Tools.PreloaderDisplay.bind(G);
@@ -242,7 +242,7 @@
     var GetImageTitleFromURL = NGY2Tools.GetImageTitleFromURL.bind(G);
     var FilterAlbumName = NGY2Tools.FilterAlbumName.bind(G);
     var AlbumPostProcess = NGY2Tools.AlbumPostProcess.bind(G);
- 
+
     switch( fnName ){
       case 'GetHiddenAlbums':
         break;
@@ -261,11 +261,10 @@
     }
 
   };
-  
+
 // END NANOPHOTOSPROVIDER DATA SOURCE FOR NANOGALLERY2
 // }( jQuery ));
-}));  
-  
-  
-  
-  
+}));
+
+
+
